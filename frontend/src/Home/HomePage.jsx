@@ -18,8 +18,8 @@ export default function HomePage({ onLogout }) {
 
     const navigate = useNavigate();
 
-    const LogOut = (e) => {
-        e.preventDefault();
+    const LogOut = () => {
+        
         navigate('/login');
     }
 

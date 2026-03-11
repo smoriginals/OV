@@ -11,6 +11,7 @@ export default function App() {
         <>
             <Routes>
                 <Route path='/' element={<AuthLayout />}>
+                    <Route index element={<Signup />} />
                     <Route path='signup' element={<Signup />} />
                     <Route path='login' element={<Login />} />
                 </Route>

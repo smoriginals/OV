@@ -8,6 +8,7 @@ export default async function resendOtpController(req, res) {
     try {
 
         const user = await usersignupModel.findOne({ email });
+
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -22,13 +23,24 @@ export default async function resendOtpController(req, res) {
             })
         }
 
+
+        if (Date.now() < user.otpResendAt) {
+            return res.status(429).json({
+                success: false,
+                message: "Please wait before requesting another OTP"
+            });
+        }
+
         const otp = String(Math.floor(100000 + Math.random() * 900000));
         const otpExpire = Date.now() + 10 * 60 * 1000;  //valid for 10 min
 
+
         user.verifyOtp = otp;
         user.verifyOtpExpireAt = otpExpire;
-        await user.save();
 
+        user.otpResendAt = Date.now() + 60 * 1000;  // allow resend after 1 min
+
+        await user.save();
 
         //await sendMail(email,
         //    'Verify Your Account',

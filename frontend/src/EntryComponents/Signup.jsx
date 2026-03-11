@@ -30,8 +30,7 @@ export default function Signup() {
     }
 
     const handleSubmit = async (e) => {
-
-        e.preventDefault()
+        e.preventDefault();
 
         if (formData.password !== formData.confirmPassword) {
             alert("Passwords do not match")
@@ -41,7 +40,8 @@ export default function Signup() {
 
         try {
             const res = await axios.post('http://localhost:5000/api/user/signup', formData);
-            if (res.data.success) {
+            console.log("Signup Response:", res.data);
+            if (res?.data?.success) {
                 setStep("otp");
                 return;
             }

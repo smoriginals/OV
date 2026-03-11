@@ -42,6 +42,10 @@ const userSignupModel = new Schema({
         type: Number,
         default:0
     },
+    otpResendAt: {
+        type: Number,
+        default: 0
+    },
 
 }, { timestamps: true })
 

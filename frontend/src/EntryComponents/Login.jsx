@@ -4,13 +4,15 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Link ,useNavigate} from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios';
+import { LoaderCircle } from 'lucide-react';
+
 export default function Login() {
 
     const navigate = useNavigate();
@@ -19,7 +21,7 @@ export default function Login() {
         email: "",
         password: "",
     })
-
+    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false)
 
     const handleChange = (e) => {
@@ -29,21 +31,28 @@ export default function Login() {
         })
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
+    const HandleSubmit = async (e) => {
+
+        e.preventDefault();
 
         if (!formData.email || !formData.password) {
-            alert("All fields are required")
+            setError('Email & Password is required');
             return
         }
 
-        setLoading(true)
+        try {
+            setLoading(true)
+            const res = await axios.post('http://localhost:5000/api/user/login', formData, { withCredentials: true });
+            console.log("Login Response:", res.data);
+            if (res?.data?.success) {
+                navigate('/home');
+            }
+        } catch (error) {
+            setError(error.response?.data?.message || 'Login Failed');
+        } finally {
+            setLoading(false);
+        }
 
-        // simulate API call
-        setTimeout(() => {
-            console.log("Login Data:", formData)
-            setLoading(false)
-        }, 1000)
     }
 
     return (
@@ -66,7 +75,7 @@ export default function Login() {
                 </CardHeader>
 
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="">
+                    <form onSubmit={HandleSubmit} className=''>
 
                         <div>
 
@@ -102,13 +111,15 @@ export default function Login() {
                         </div>
 
                         <div className='mt-8 flex flex-col space-y-1'>
+
+                            {error && <p className="py-2 text-center text-sm text-red-500">{error}</p>}
+
                             <Button
                                 type="submit"
                                 className="h-10 w-full"
                                 disabled={loading}
-                                onClick={() => {navigate('/home') } }
                             >
-                                {loading ? "Logging in..." : "Login"}
+                                {loading ? <LoaderCircle className='animate-spin' /> : "Login"}
                             </Button>
 
                             <Button variant="outline" className="h-10 w-full border-gray-300">
@@ -120,7 +131,7 @@ export default function Login() {
                 </CardContent>
 
             </Card>
-           
+
         </>
     )
 }

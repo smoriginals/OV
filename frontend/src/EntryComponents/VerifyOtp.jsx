@@ -7,15 +7,30 @@ import { Button } from "@/components/ui/button"
 import { useState } from 'react';
 import axios from 'axios';
 import { LoaderCircle } from 'lucide-react';
+import { useEffect } from 'react';
 
 export default function VerifyOtp({ onVerifySuccess, email }) {
 
     const [otp, setOtp] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [resending, setResending] = useState(false);
+    const [cooldown, setCooldown] = useState(0);
 
+    useEffect(() => {
 
-    const HandleVerify = async () => {
+        if (cooldown === 0) return;
+
+        const timer = setInterval(() => {
+            setCooldown((prev) => prev - 1);
+        }, 1000);
+
+        return () => clearInterval(timer);
+
+    }, [cooldown]);
+
+    const HandleVerify = async (e) => {
+        e.preventDefault();
 
         if (otp.length !== 6) {
             alert('Enter 6 Digit OTP')
@@ -37,21 +52,24 @@ export default function VerifyOtp({ onVerifySuccess, email }) {
         }
     }
 
-    const HandleResendOtp = async () => {
+    const HandleResendOtp = async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
 
         try {
-            setLoading(true);
+            setResending(true);
             setError('');
 
             const res = await axios.post(
-                'http://localhost:5000/api/user/resend-otp',
+                'http://localhost:5000/api/user/resend',
                 { email },
                 { withCredentials: true }
             );
-
-            if (res.data.success) {
+            console.log("Resend OTP Response:", res.data);
+            if (res?.data?.success) {
                 setOtp(''); // clear previous OTP
-                alert(res.data.message || "OTP resent successfully");
+                setCooldown(60); // start 60 second timer
+
             }
 
         } catch (error) {
@@ -59,9 +77,10 @@ export default function VerifyOtp({ onVerifySuccess, email }) {
                 error.response?.data?.message || "Failed to resend OTP"
             );
         } finally {
-            setLoading(false);
+            setResending(false);
         }
     }
+
 
     return (
         <>
@@ -84,9 +103,21 @@ export default function VerifyOtp({ onVerifySuccess, email }) {
 
                     {/*Resend OTP*/}
 
-                    <span className='text-xs text-blue-500 hover:cursor-pointer' onClick={HandleResendOtp}>Resend OTP</span>
+                    <div className={`text-xs flex  py-0.5 justify-between items-center ${cooldown > 0 ? "text-gray-500" : "text-blue-500 cursor-pointer"}`}
+                        onClick={cooldown === 0 && !resending ? HandleResendOtp : undefined}
+                    >
 
-                    {error && (<p className="text-center text-xs text-red-500">{error}</p>)}
+                        <p>
+                            {resending
+                                ? "Sending..."
+                                : cooldown > 0
+                                    ? `Resend OTP in ${cooldown}s`
+                                    : "Resend OTP"}
+                        </p>
+                        {error && (<p className="pr-0.5 text-center text-xs text-red-500">{error}</p>)}
+
+                    </div>
+
 
                 </div>
             </div>
