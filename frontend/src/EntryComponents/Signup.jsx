@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label"
 import VerifyOtp from "../EntryComponents/VerifyOtp"
 import Login from "../EntryComponents/Login"
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import API from '../utility/AxiosInstance';
 
 
 export default function Signup() {
@@ -39,7 +39,7 @@ export default function Signup() {
 
 
         try {
-            const res = await axios.post('http://localhost:5000/api/user/signup', formData);
+            const res = await API.post('/api/user/signup', formData);
             console.log("Signup Response:", res.data);
             if (res?.data?.success) {
                 setStep("otp");

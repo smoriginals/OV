@@ -10,8 +10,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios';
 import { LoaderCircle } from 'lucide-react';
+import API from '../utility/AxiosInstance';
 
 export default function Login() {
 
@@ -42,7 +42,7 @@ export default function Login() {
 
         try {
             setLoading(true)
-            const res = await axios.post('http://localhost:5000/api/user/login', formData, { withCredentials: true });
+            const res = await API.post('/api/user/login', formData, { withCredentials: true });
             console.log("Login Response:", res.data);
             if (res?.data?.success) {
                 navigate('/home');

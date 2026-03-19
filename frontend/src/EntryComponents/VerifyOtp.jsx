@@ -5,9 +5,9 @@
 } from "@/components/ui/input-otp"
 import { Button } from "@/components/ui/button"
 import { useState } from 'react';
-import axios from 'axios';
 import { LoaderCircle } from 'lucide-react';
 import { useEffect } from 'react';
+import API from '../utility/AxiosInstance';
 
 export default function VerifyOtp({ onVerifySuccess, email }) {
 
@@ -40,7 +40,7 @@ export default function VerifyOtp({ onVerifySuccess, email }) {
         try {
             setLoading(true);
             setError('');
-            const res = await axios.post('http://localhost:5000/api/user/verify', { email, otp }, { withCredentials: true });
+            const res = await API.post('/api/user/verify', { email, otp }, { withCredentials: true });
             if (res.data.success) {
                 onVerifySuccess();
             }
@@ -60,8 +60,8 @@ export default function VerifyOtp({ onVerifySuccess, email }) {
             setResending(true);
             setError('');
 
-            const res = await axios.post(
-                'http://localhost:5000/api/user/resend',
+            const res = await API.post(
+                '/api/user/resend',
                 { email },
                 { withCredentials: true }
             );
