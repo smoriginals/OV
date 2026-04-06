@@ -24,11 +24,11 @@ const userSignupModel = new Schema({
     },
     verifyOtp: {
         type: String,
-        default:''
+        default: ''
     },
     verifyOtpExpireAt: {
         type: Number,
-        default:0
+        default: 0
     },
     isAccountVerify: {
         type: Boolean,
@@ -36,16 +36,20 @@ const userSignupModel = new Schema({
     },
     resetOtp: {
         type: String,
-        default:''
+        default: ''
     },
     resetOtpExpireAt: {
         type: Number,
-        default:0
+        default: 0
     },
     otpResendAt: {
         type: Number,
         default: 0
     },
+    newSavePasswordRequest: {
+        type: Boolean,
+        default: false
+    }
 
 }, { timestamps: true })
 

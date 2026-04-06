@@ -13,6 +13,7 @@ import VerifyOtp from "../EntryComponents/VerifyOtp"
 import Login from "../EntryComponents/Login"
 import { Link } from 'react-router-dom';
 import API from '../utility/AxiosInstance';
+import ForgetPass from "./ForgetPass";
 
 
 export default function Signup() {
@@ -53,7 +54,7 @@ export default function Signup() {
 
     return (
         <div className="flex items-center justify-center">
-            <Card className="w-full max-w-md shadow-2xl">
+            <Card className="w-96 max-w-md shadow-2xl">
 
                 {/* ================= FORM ================= */}
                 {step === "form" && (
@@ -68,7 +69,7 @@ export default function Signup() {
                         </CardHeader>
 
                         <CardContent>
-                            <form onSubmit={handleSubmit} className="">
+                            
 
                                 <div className="">
                                     <Label className='text-xs font-semibold'>Username</Label>
@@ -121,11 +122,11 @@ export default function Signup() {
                                     />
                                 </div>
 
-                                <Button type="submit" className="text-md mt-8 h-10 w-full">
+                                <Button type="submit" className="text-md mt-8 h-10 w-full" onClick={handleSubmit}>
                                     Create
                                 </Button>
 
-                            </form>
+                          
                         </CardContent>
                     </div>
                 )}
@@ -161,7 +162,11 @@ export default function Signup() {
                         <Login />
                     </div>
                 )}
-
+                {step === "forget-password" && (
+                    <div className="animate-in fade-in slide-in-from-left-4 duration-300">
+                        <ForgetPass />
+                    </div>
+                )}
             </Card>
 
 

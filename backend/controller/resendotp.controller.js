@@ -1,5 +1,6 @@
 import usersignupModel from '../model/usersignup.model.js';
 import sendMail from '../jobs/sendemail.js';
+import bcrypt from 'bcryptjs';
 
 export default async function resendOtpController(req, res) {
 
@@ -32,20 +33,21 @@ export default async function resendOtpController(req, res) {
         }
 
         const otp = String(Math.floor(100000 + Math.random() * 900000));
+        const hashOtp = await bcrypt.hash(otp, 10);
         const otpExpire = Date.now() + 10 * 60 * 1000;  //valid for 10 min
 
 
-        user.verifyOtp = otp;
+        user.verifyOtp = hashOtp;
         user.verifyOtpExpireAt = otpExpire;
 
         user.otpResendAt = Date.now() + 60 * 1000;  // allow resend after 1 min
 
         await user.save();
 
-        //await sendMail(email,
-        //    'Verify Your Account',
-        //    `<h2>Your Verification Code is: <strong>${otp}</strong></h2><p>Valid for 10 minutes.</p>`
-        //)
+        await sendMail(email,
+            'Verify Your Account',
+            `<h2>Your Verification Code is: <strong>${otp}</strong></h2><p>Valid for 10 minutes.</p>`
+        )
 
         return res.status(200).json({
             success: true,

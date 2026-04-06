@@ -1,4 +1,4 @@
-﻿import { useState } from "react"
+﻿import { useState,useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -23,6 +23,8 @@ export default function Login() {
     })
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false)
+    const [cooldown, setCooldown] = useState(0);
+
 
     const handleChange = (e) => {
         setFormData({
@@ -55,12 +57,22 @@ export default function Login() {
 
     }
 
+    useEffect(() => {
+        if (!cooldown) return;
+
+        const timer = setInterval(() => {
+            setCooldown((prev) => prev - 1);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [cooldown]);
+  
     return (
 
 
         <>
 
-            <Card className="animate-in fade-in slide-in-from-left-4 mx-auto w-auto duration-500">
+            <Card className="animate-in fade-in slide-in-from-left-4 mx-auto w-96 duration-500">
 
                 <CardHeader className="space-y-1 text-center">
                     <CardTitle className="text-2xl font-bold">
@@ -96,6 +108,7 @@ export default function Login() {
                             <div className="">
 
                                 <Label htmlFor="password" className='text-xs font-semibold'>Password</Label>
+
                                 <Input
                                     id="password"
                                     name="password"
@@ -106,7 +119,9 @@ export default function Login() {
                                     required
                                     className="h-12"
                                 />
-                                <Link to='/reset-password' className='relative text-xs text-gray-600'>Reset Password</Link>
+
+                                <p className='cursor-pointer px-1 py-0.5 text-right text-sm text-gray-600' onClick={() => { navigate('/forget-password') } }>Forget Password?</p>
+
                             </div>
                         </div>
 

@@ -7,6 +7,10 @@ import userSignupRoute from './routes/usersignup.route.js'
 import verifyOtpRoute from './routes/verifyotp.route.js';
 import resendOtpRoute from './routes/resendotp.route.js';
 import userLoginRoute from './routes/userlogin.route.js';
+import allUsersRoute from './routes/allusers.route.js';
+import forgetPasswordRoute from './routes/forgetpassword.route.js';
+import saveNewPasswordRoute from './routes/savenewpassword.route.js';
+
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -25,13 +29,16 @@ app.use(cors({
 
 
 app.use('/api/user', userSignupRoute);
-app.use('/api/user', verifyOtpRoute);
-app.use('/api/user', resendOtpRoute);
 app.use('/api/user', userLoginRoute);
+app.use('/api/user', allUsersRoute);
+app.use('/api/user', forgetPasswordRoute);
+
+app.use('/api/user', resendOtpRoute);
+app.use('/api/user', verifyOtpRoute);
+app.use('/api/user', saveNewPasswordRoute);
 
 
-
-app.get('/', (req, res) => {
+app.get('/health', (req, res) => {
     res.send(`${PORT} is Live`)
 })
 

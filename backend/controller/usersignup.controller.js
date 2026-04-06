@@ -8,6 +8,7 @@ export default async function usersignupController(req, res) {
 
         const { username, email, password } = req.body;
 
+        //if user not fill in all fields then this code work
         if (!username || !email || !password) {
             return res.status(400).json({
                 success: false,
@@ -15,8 +16,8 @@ export default async function usersignupController(req, res) {
             })
         }
 
+        //check password that strong or not with regex
         const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
-
         if (!regexPassword.test(password)) {
             return res.status(400).json({
                 success: false,
@@ -24,8 +25,8 @@ export default async function usersignupController(req, res) {
             })
         }
 
+        //check email with regex
         const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
         if (!regexEmail.test(email)) {
             return res.status(400).json({
                 success: false,
@@ -33,8 +34,8 @@ export default async function usersignupController(req, res) {
             });
         }
 
-        const existingUser = await userSignupModel.findOne({ $or: [{ email }, { username }] })
-
+        //check user already exist or not
+        const existingUser = await userSignupModel.findOne({ email })
         if (existingUser) {
             return res.status(409).json({
                 success: false,
@@ -45,17 +46,21 @@ export default async function usersignupController(req, res) {
         const hashPassword = await bcrypt.hash(password, 10);
 
         const otp = String(Math.floor(100000 + Math.random() * 900000));
+
         const otpExpire = Date.now() + 10 * 60 * 1000;  //valid for 10 min
+
+        const hashOtp = await bcrypt.hash(otp, 10);
 
         const newUser = new userSignupModel({
             username: username,
             email: email,
             password: hashPassword,
-            verifyOtp: otp,
+            verifyOtp: hashOtp,//add hashotp when its ready for production
             verifyOtpExpireAt: otpExpire,
         })
 
         await newUser.save();
+
         //send otp to user Email
 
         //const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -67,10 +72,10 @@ export default async function usersignupController(req, res) {
         //})
 
 
-        //await sendMail(email,
-        //    'Verify Your Account',
-        //    `<h2>Your Verification Code is: <strong>${otp}</strong></h2><p>Valid for 10 minutes.</p>`
-        //)
+        await sendMail(email,
+            'Verify Your Account',
+            `<h2>Your Verification Code is: <strong>${otp}</strong></h2><p>Valid for 10 minutes.</p>`
+        )
 
         return res.status(201).json({
             success: true,

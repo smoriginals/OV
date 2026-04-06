@@ -6,6 +6,7 @@ import Login from './EntryComponents/Login';
 import HomePage from './Home/HomePage';
 import AuthLayout from './EntryComponents/AuthLayout';
 import PublicRoute from './utility/PublicRoute';
+import ForgetPass from './EntryComponents/ForgetPass';
 
 export default function App() {
 
@@ -18,6 +19,7 @@ export default function App() {
                     {/*<Route index element={<Signup />} />*/}
                     <Route path='signup' element={<Signup />} />
                     <Route path='login' element={<Login />} />
+                    <Route path='forget-password' element={<ForgetPass />} />
                 </Route>
                 <Route path='/home' element={<PublicRoute><HomePage /></PublicRoute>} />
             </Routes>

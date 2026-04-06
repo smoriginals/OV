@@ -4,7 +4,7 @@ export default function PublicRoutes({ children }) {
 
 	const token = document.cookie.includes('token');
 
-	if (!token) {
+	if (token) {
 		return <Navigate to='/home' replace />
 	}
 

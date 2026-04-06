@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { useEffect } from 'react';
 import API from '../utility/AxiosInstance';
+//import {useNavigate} from 'react-router-dom';
 
 export default function VerifyOtp({ onVerifySuccess, email }) {
 
@@ -16,6 +17,8 @@ export default function VerifyOtp({ onVerifySuccess, email }) {
     const [loading, setLoading] = useState(false);
     const [resending, setResending] = useState(false);
     const [cooldown, setCooldown] = useState(0);
+
+    //const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -28,6 +31,8 @@ export default function VerifyOtp({ onVerifySuccess, email }) {
         return () => clearInterval(timer);
 
     }, [cooldown]);
+
+   
 
     const HandleVerify = async (e) => {
         e.preventDefault();
@@ -44,6 +49,7 @@ export default function VerifyOtp({ onVerifySuccess, email }) {
             if (res.data.success) {
                 onVerifySuccess();
             }
+            
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to verify OTP');
         }
@@ -99,6 +105,7 @@ export default function VerifyOtp({ onVerifySuccess, email }) {
                             <InputOTPSlot index={5} className='border-gray-400 transition-all duration-200 focus:border-primary focus:ring-primary/40 focus:scale-110 focus:ring-2' />
 
                         </InputOTPGroup>
+
                     </InputOTP>
 
                     {/*Resend OTP*/}
@@ -117,7 +124,6 @@ export default function VerifyOtp({ onVerifySuccess, email }) {
                         {error && (<p className="pr-0.5 text-center text-xs text-red-500">{error}</p>)}
 
                     </div>
-
 
                 </div>
             </div>
